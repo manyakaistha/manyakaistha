@@ -129,10 +129,14 @@ for name,num,title,tag,stack in projects:
 
 svg('footer.svg',1200,100,text(40,59,'ALWAYS CURIOUS. ALWAYS BUILDING.',17,COPPER,extra='letter-spacing="3"')+text(1160,59,'Let’s make something worth exploring. ↗',18,INK,'Georgia, serif','text-anchor="end"'),'Always curious. Always building. Let’s make something worth exploring.')
 
+# New image URLs bypass cached copies of the profile's original static artwork.
+for name in ('hero','analytics','touchline','flux','faceinsight','matching','learning'):
+    (OUT / (name+'-motion.svg')).write_bytes((OUT / (name+'.svg')).read_bytes())
+
 # A still alternative is always useful when sharing an asset outside GitHub.
 import re
 for asset in OUT.glob('*.svg'):
-    if asset.stem.endswith('-still'):
+    if asset.stem.endswith(('-still','-motion')):
         continue
     static = re.sub(r'<style>.*?</style>', '', asset.read_text(), flags=re.S)
     # Orbit dots keep their resting placement even when their stylesheet is removed.
@@ -145,7 +149,7 @@ if readme.exists():
     still = still.replace('href="STILL.md"', 'href="https://github.com/manyakaistha"')
     still = re.sub(
         r'<picture><source [^>]+/><img src="assets/([^".]+)\.svg" ([^>]+?)/></picture>',
-        lambda m: '<img src="assets/'+m.group(1)+'-still.svg" '+m.group(2)+'/>',
+        lambda m: '<img src="assets/'+m.group(1).removesuffix('-motion')+'-still.svg" '+m.group(2)+'/>',
         still,
     )
     (OUT.parent / 'STILL.md').write_text(still)

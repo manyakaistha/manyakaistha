@@ -1,5 +1,5 @@
 <p>
-  <picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/hero-still.svg" /><img src="assets/hero.svg" width="100%" alt="Manya Kaistha — Curiosity, made tangible. AI systems, thoughtful interfaces, open experiments." /></picture>
+  <picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/hero-still.svg" /><img src="assets/hero-motion.svg" width="100%" alt="Manya Kaistha — Curiosity, made tangible. AI systems, thoughtful interfaces, open experiments." /></picture>
 </p>
 
 <p align="center">
@@ -46,7 +46,7 @@ Meet [Flux Reader](https://github.com/manyakaistha/Flux-Reader) for word-by-word
 <tr>
 <td width="50%" valign="top">
 
-<a href="https://github.com/manyakaistha/nl-analytics-query-engine"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/analytics-still.svg" /><img src="assets/analytics.svg" width="100%" alt="01 — Analytics Query Engine. Plain language to inspectable SQL. Python, FastAPI, DuckDB." /></picture></a>
+<a href="https://github.com/manyakaistha/nl-analytics-query-engine"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/analytics-still.svg" /><img src="assets/analytics-motion.svg" width="100%" alt="01 — Analytics Query Engine. Plain language to inspectable SQL. Python, FastAPI, DuckDB." /></picture></a>
 
 **Ask a question. Inspect the calculation.** A natural-language analytics workspace with visible SQL, result tables, and evaluation evidence.
 
@@ -64,7 +64,7 @@ The interesting part is the handoff from generated SQL to bounded, read-only exe
 </td>
 <td width="50%" valign="top">
 
-<a href="https://github.com/manyakaistha/touchline-fifa-worldcup-hybrid-graph-rag"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/touchline-still.svg" /><img src="assets/touchline.svg" width="100%" alt="02 — Touchline. Follow the evidence. GraphRAG, FastAPI, local retrieval." /></picture></a>
+<a href="https://github.com/manyakaistha/touchline-fifa-worldcup-hybrid-graph-rag"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/touchline-still.svg" /><img src="assets/touchline-motion.svg" width="100%" alt="02 — Touchline. Follow the evidence. GraphRAG, FastAPI, local retrieval." /></picture></a>
 
 **World Cup questions, connected to sources.** A local-first evidence workbench combining graph and semantic retrieval with an explorable knowledge graph.
 
@@ -84,7 +84,7 @@ Graph and semantic retrieval can be explored independently or combined. Source p
 <tr>
 <td width="50%" valign="top">
 
-<a href="https://github.com/manyakaistha/Flux-Reader"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/flux-still.svg" /><img src="assets/flux.svg" width="100%" alt="03 — Flux Reader. One word, your pace. TypeScript, React Native, Expo." /></picture></a>
+<a href="https://github.com/manyakaistha/Flux-Reader"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/flux-still.svg" /><img src="assets/flux-motion.svg" width="100%" alt="03 — Flux Reader. One word, your pace. TypeScript, React Native, Expo." /></picture></a>
 
 **A different rhythm for reading.** A PDF and EPUB reader with word-by-word playback, adjustable pace, and a local library that remembers your place.
 
@@ -102,7 +102,7 @@ PDF and EPUB extraction feed a word-by-word reader. Adjustable pacing, context w
 </td>
 <td width="50%" valign="top">
 
-<a href="https://github.com/manyakaistha/faceinsight"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/faceinsight-still.svg" /><img src="assets/faceinsight.svg" width="100%" alt="04 — FaceInsight. Look inside the model. PyTorch, LoRA, Next.js." /></picture></a>
+<a href="https://github.com/manyakaistha/faceinsight"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/faceinsight-still.svg" /><img src="assets/faceinsight-motion.svg" width="100%" alt="04 — FaceInsight. Look inside the model. PyTorch, LoRA, Next.js." /></picture></a>
 
 **From model output to model understanding.** A vision research studio bringing together local inference, Grad-CAM explanations, and saved evaluations.
 
@@ -122,7 +122,7 @@ The workbench connects local vision inference with Grad-CAM overlays. Model inte
 <tr>
 <td width="50%" valign="top">
 
-<a href="https://github.com/manyakaistha/The-Sequential-Matching-Problem-Final"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/matching-still.svg" /><img src="assets/matching.svg" width="100%" alt="05 — Sequential Matching. Decisions under uncertainty. Python, simulation, evaluation." /></picture></a>
+<a href="https://github.com/manyakaistha/The-Sequential-Matching-Problem-Final"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/matching-still.svg" /><img src="assets/matching-motion.svg" width="100%" alt="05 — Sequential Matching. Decisions under uncertainty. Python, simulation, evaluation." /></picture></a>
 
 **Who to introduce, and when?** Research on reciprocal matching with delayed feedback, synthetic simulations, and a report that documents results and limitations.
 
@@ -140,7 +140,7 @@ Which information should a policy request before introducing a pair? The report 
 </td>
 <td width="50%" valign="top">
 
-<a href="https://manyakaistha.github.io/DLGenAI-26T3/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/learning-still.svg" /><img src="assets/learning.svg" width="100%" alt="06 — DL / GenAI Resources. Complex ideas, made explorable. PyTorch, notebooks, interactive guides." /></picture></a>
+<a href="https://manyakaistha.github.io/DLGenAI-26T3/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/learning-still.svg" /><img src="assets/learning-motion.svg" width="100%" alt="06 — DL / GenAI Resources. Complex ideas, made explorable. PyTorch, notebooks, interactive guides." /></picture></a>
 
 **Make the difficult ideas easier to explore.** Study guides, interactive lessons, and notebooks on segmentation, data pipelines, and transfer learning.
 

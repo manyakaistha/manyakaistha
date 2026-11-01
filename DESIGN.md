@@ -23,7 +23,7 @@ No private project source or planned project is published by this change.
 
 Validation before publication:
 
-- Parsed all 16 SVGs and checked every local image reference.
+- Parsed all SVGs and checked every local image reference.
 - Used GitHub's Markdown API to verify preservation of 8 picture elements and
   10 native disclosure panels.
 - Inspected orbital transforms at 0 and 1.2 seconds and verified their final state.
