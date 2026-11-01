@@ -70,6 +70,28 @@ for angle in (0, 2.2, 4.25):
 hero += '</g>'
 svg('hero.svg',1200,350,hero,'Manya Kaistha — Curiosity, made tangible. AI systems, thoughtful interfaces, open experiments.')
 
+release = text(48, 42, 'RELEASED / MACOS APP', 13, COPPER, extra='letter-spacing="2.5"')
+release += text(48, 108, 'PullStar', 61, INK, 'Georgia, Times New Roman, serif')
+release += text(50, 160, 'Align the night. Keep the motion.', 30, COPPER, 'Georgia, Times New Roman, serif', 'font-style="italic"')
+release += text(50, 211, 'Camera wobble corrected. Star trails preserved.', 18, MUTED)
+release += line(48, 250, 1152, 250, MINT, .2)
+release += text(50, 285, 'LOCAL PROCESSING / ALIGNED FRAMES / MCP', 12, MUTED, extra='letter-spacing="1.5"')
+release += text(1150, 285, 'EXPLORE THE RELEASE ↗', 12, COPPER, extra='text-anchor="end" letter-spacing="1.5"')
+# Short, deterministic arcs evoke long exposures without changing the copy.
+for i, radius in enumerate((70, 101, 133, 166, 200, 235)):
+    points = [(1010 + radius*cos((-155+j/64*125)*pi/180),
+               270 + radius*sin((-155+j/64*125)*pi/180)) for j in range(65)]
+    d = 'M' + ' L'.join(f'{x:.2f},{y:.2f}' for x,y in points)
+    color = COPPER if i in (1,4) else MINT
+    release += f'<path class="trace" style="animation-delay:{i*.12}s" d="{d}" fill="none" stroke="{color}" stroke-width="{1.5 if i%2 else 1}" opacity=".6"/>'
+    x,y=points[-1]
+    release += '<g class="pulse">'+circle(round(x,2),round(y,2),3,color,color)+'</g>'
+stars = Random(8128)
+for _ in range(24):
+    x,y=stars.uniform(740,1150),stars.uniform(42,222)
+    release += circle(round(x,2),round(y,2),round(stars.uniform(.6,1.3),2),MINT,MINT,.4)
+svg('pullstar.svg',1200,320,release,'PullStar — Align the night. Keep the motion. A local macOS app for aligned night-sky images, star trails, and MCP automation.')
+
 projects = [
  ('analytics','01','Analytics Query Engine','PLAIN LANGUAGE → INSPECTABLE SQL','Python / FastAPI / DuckDB'),
  ('touchline','02','Touchline','FOLLOW THE EVIDENCE','GraphRAG / FastAPI / Local retrieval'),
@@ -130,7 +152,7 @@ for name,num,title,tag,stack in projects:
 svg('footer.svg',1200,100,text(40,59,'ALWAYS CURIOUS. ALWAYS BUILDING.',17,COPPER,extra='letter-spacing="3"')+text(1160,59,'Let’s make something worth exploring. ↗',18,INK,'Georgia, serif','text-anchor="end"'),'Always curious. Always building. Let’s make something worth exploring.')
 
 # New image URLs bypass cached copies of the profile's original static artwork.
-for name in ('hero','analytics','touchline','flux','faceinsight','matching','learning'):
+for name in ('hero','pullstar','analytics','touchline','flux','faceinsight','matching','learning'):
     (OUT / (name+'-motion.svg')).write_bytes((OUT / (name+'.svg')).read_bytes())
 
 # A still alternative is always useful when sharing an asset outside GitHub.

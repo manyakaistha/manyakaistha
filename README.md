@@ -13,7 +13,7 @@
 
 ### Hi, I'm Manya.
 
-I build across **machine learning, research, and product interfaces** — from asking questions of data to exploring graphs, interpreting models, and making reading feel different.
+I build across **machine learning, research, and product interfaces** — from asking questions of data to aligning night-sky images, exploring graphs, and making reading feel different.
 
 I'm interested in the whole journey: the underlying idea, the evidence that supports it, and the interface that makes it useful.
 
@@ -34,13 +34,30 @@ Explore [Sequential Matching](https://github.com/manyakaistha/The-Sequential-Mat
 </details>
 
 <details>
-<summary><strong>03 · Try a different way to read or learn</strong></summary>
+<summary><strong>03 · Explore an app or learn something new</strong></summary>
 
-Meet [Flux Reader](https://github.com/manyakaistha/Flux-Reader) for word-by-word reading, or visit the [DL / GenAI learning hub](https://manyakaistha.github.io/DLGenAI-26T3/) for interactive lessons and notebooks.
+Try [PullStar](https://github.com/manyakaistha/PullStar) to align night-sky sequences and create star trails on your Mac. Meet [Flux Reader](https://github.com/manyakaistha/Flux-Reader) for word-by-word reading, or visit the [DL / GenAI learning hub](https://manyakaistha.github.io/DLGenAI-26T3/) for interactive lessons and notebooks.
 
 </details>
 
 ## Selected work
+
+<a href="https://github.com/manyakaistha/PullStar"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/pullstar-still.svg" /><img src="assets/pullstar-motion.svg" width="100%" alt="PullStar — Align the night. Keep the motion. A local macOS app for aligned night-sky images, star trails, and MCP automation." /></picture></a>
+
+**PullStar · Align the night. Keep the motion.** Correct camera wobble while preserving the sky’s natural rotation. Export aligned frames for another editor, or create star-trail images and videos in the same local workspace.
+
+**[Download for macOS ↗](https://github.com/manyakaistha/PullStar/releases/latest)** &nbsp; · &nbsp; [Explore PullStar](https://github.com/manyakaistha/PullStar) &nbsp; · &nbsp; [MCP integration](https://github.com/manyakaistha/PullStar/blob/main/docs/mcp-server.md)
+
+<sub>Apple Silicon · macOS 14+ · Public release of Star Aligner</sub>
+
+<details>
+<summary><strong>Inside PullStar</strong></summary>
+
+`Night-sky frames → alignment → images or trails`
+
+Automatic star-field matching works without Polaris in the frame; manual reference tracking is also available. Export aligned TIFF, PNG, or JPEG sequences, build trails, or render video. Processing stays on your computer, and the bundled MCP server supports inspection, previews, exports, and background jobs.
+
+</details>
 
 <table>
 <tr>
