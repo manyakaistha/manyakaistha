@@ -1,0 +1,48 @@
+name: Night sky
+
+# Re-expose the profile sky every night: fetch the contribution calendar,
+# rotate the sky by one sidereal day, and rebuild the artwork.
+on:
+  schedule:
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: night-sky
+  cancel-in-progress: false
+
+jobs:
+  expose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install fonttools==4.66.1
+      - name: Fetch contribution calendar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api graphql -f login="${{ github.repository_owner }}" -f query='
+            query($login: String!) { user(login: $login) { contributionsCollection {
+              contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } } } } }' \
+            > /tmp/contributions.json \
+          && python -c "import json;json.load(open('/tmp/contributions.json'))['data']['user']['contributionsCollection']" \
+          && mv /tmp/contributions.json data/contributions.json \
+          || echo "::warning::Calendar fetch failed; keeping the cached sky data."
+      - run: python tools/build.py
+      - name: Commit the new sky
+        run: |
+          if git diff --quiet; then echo "Sky unchanged."; exit 0; fi
+          git config user.name "night-sky[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets data docs/sky.json
+          git commit -m "Expose tonight's sky ($(date -u +%F))"
+          git push

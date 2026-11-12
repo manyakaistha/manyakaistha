@@ -1,37 +1,47 @@
-# Profile artwork and interaction notes
+# Long Exposure — profile design notes
 
-Edit `README.md`, then run `python3 generate_assets.py` to rebuild the artwork,
-static alternatives, and `STILL.md`. Python's standard library is sufficient.
-The palette and project labels live in the generator.
+The profile is an astrophotographer's plate. The hero is a long exposure of the
+last year on GitHub: **one star per day**, every trail the same angular length
+(as in a real exposure), brightness and width from that day's contributions.
+Nothing in the sky is decoration. The name enters as a shaken double exposure
+and springs into alignment, which is what PullStar does to night-sky frames.
 
-The hero uses a fixed-seed constellation and precomputed parametric ellipse
-positions. Each project illustration animates its own mechanism: chart growth,
-graph signals, a reading guide, a heatmap, matching paths, or floating lesson
-pages. Text stays still and readable. SVG CSS handles animation without scripts,
-external fonts, tracking, or third-party image services.
+## Build
 
-All motion ends within 4.8 seconds of an asset's animation start. There are no
-infinite loops or page-level animation timers. SVG images run in the browser's
-image context; the profile cannot install visibility or intersection observers.
-Every image has a `prefers-reduced-motion` picture source, an internal reduced
-motion rule, and a generated still SVG. The still edition is also linked near
-the top of the profile.
+    pip install fonttools
+    python3 tools/build.py              # or --date YYYY-MM-DD
 
-The three exploration trails and six project notes use native `details` and
-`summary`. GitHub owns their focus, keyboard interaction, and disclosure state.
-No private project source or planned project is published by this change.
+`tools/build.py` writes `assets/*-motion.svg` (CSS animation, no scripts) and
+`assets/*-still.svg` (settled final frame, used for `prefers-reduced-motion`).
+Text is converted to glyph outlines (`tools/typeset.py`, GPOS kerning) because
+SVG images on GitHub cannot load web fonts. Fonts: Instrument Serif and
+JetBrains Mono, both SIL OFL (licences in `tools/fonts`).
 
-Validation before publication:
+Geometry is seeded (Mulberry32), so builds are reproducible. Only two things
+change the hero: new contribution data, and the date, which turns the sky by
+one sidereal day (~0.9856°) per night.
 
-- Parsed all SVGs and checked every local image reference.
-- Used GitHub's Markdown API to verify preservation of 8 picture elements and
-  10 native disclosure panels.
-- Inspected orbital transforms at 0 and 1.2 seconds and verified their final state.
-- Observed browser animation durations for all six project illustrations;
-  the maximum was 4.65 seconds. The header maximum was 4.8 seconds.
-- Confirmed the still header exposes no browser animations.
-- Opened a trail with a pointer and closed it with Enter at a 390px viewport;
-  no horizontal page overflow was present.
+`.github/workflows/night-sky.yml` refetches the calendar daily with the
+workflow token and commits the new sky when it changed. The workflow token
+sees public contributions; the cached `data/contributions.json` is kept if the
+fetch fails.
 
-System-level reduced-motion emulation was not available in the preview tools;
-the media rules and generated still assets were inspected directly.
+## Motion
+
+- Hero: trails expose over 6.5 s; glyphs settle on a damped spring baked into
+  keyframes (`spring_keyframes`); ghost exposures converge and vanish; one
+  satellite crosses every 38 s.
+- Plates: each animates its own mechanism (SQL typing and result columns, an
+  evidence path through a graph, RSVP words with the focal letter, a Grad-CAM
+  sweep, delayed matches, a forward pass). Only Flux Reader and the footer
+  meteor loop.
+- Every SVG has an internal reduced-motion rule and a still twin.
+
+## Observatory (`docs/`)
+
+An interactive canvas page served by GitHub Pages from `/docs`. It renders the
+same seeded sky. Hold (or Space) to open the shutter, move to shake the
+camera, release to align: the recorded wobble unwinds through a spring and the
+trails become clean arcs. Hover or use ← → to visit a day. DPR scaling,
+clamped delta time, paused when hidden, and a static exposure under reduced
+motion.

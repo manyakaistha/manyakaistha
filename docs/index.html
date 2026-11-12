@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Observatory — Manya Kaistha</title>
+<meta name="description" content="A year of GitHub activity as a night sky. Hold to open the shutter, move to shake the camera, release to align.">
+<style>
+@font-face{font-family:"Instrument Serif";src:url(fonts/InstrumentSerif-Regular.ttf) format("truetype");font-display:swap}
+@font-face{font-family:"Instrument Serif";font-style:italic;src:url(fonts/InstrumentSerif-Italic.ttf) format("truetype");font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/JetBrainsMono-Variable.ttf) format("truetype");font-weight:100 800;font-display:swap}
+:root{
+  --ink:#05060a;--paper:#f1ebde;--muted:#8a92a6;--dim:#4d5468;--amber:#ffa64d;
+  --serif:"Instrument Serif",Georgia,serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--ink);color:var(--paper);overflow:hidden}
+body{font-family:var(--mono);-webkit-font-smoothing:antialiased}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.ui{position:fixed;inset:0;pointer-events:none;padding:clamp(16px,3.2vw,40px);display:grid;
+  grid-template-rows:auto 1fr auto;gap:16px}
+.ui a,.ui button{pointer-events:auto}
+.top{display:flex;justify-content:space-between;gap:16px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.top a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
+.top a:hover,.top a:focus-visible{color:var(--paper);border-color:currentColor;outline:none}
+h1{margin:0;font-family:var(--serif);font-weight:400;line-height:.82;font-size:clamp(64px,13vw,196px);letter-spacing:-.01em;align-self:end}
+h1 em{display:block;padding-left:.45em}
+.tag{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.2vw,28px);color:#c9c3b6;margin:14px 0 0 .1em}
+.bottom{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hint b{color:var(--paper);font-weight:500}
+.read{display:flex;gap:22px;font-variant-numeric:tabular-nums}
+.read span{color:var(--paper)}
+.state{color:var(--amber)}
+.tip{position:fixed;left:0;top:0;pointer-events:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--paper);background:rgba(5,6,10,.82);border:1px solid rgba(255,166,77,.5);padding:7px 10px;border-radius:6px;
+  transform:translate(-9999px,0);white-space:nowrap;backdrop-filter:blur(6px)}
+.tip i{font-style:normal;color:var(--amber)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+canvas:focus-visible{outline:2px solid var(--amber);outline-offset:-6px}
+@media (max-width:640px){.top span:first-child{display:none}.top{justify-content:flex-end}.read{gap:14px}.hint{width:100%}}
+</style>
+</head>
+<body>
+<canvas id="sky" tabindex="0" aria-label="Night sky: one star per day of GitHub activity. Use left and right arrow keys to visit days; hold Space to open the shutter."></canvas>
+<div class="ui">
+  <div class="top"><span>Observatory · a year on GitHub</span><span><a href="https://github.com/manyakaistha">← Back to the profile</a></span></div>
+  <div style="align-self:end">
+    <h1>Manya<em>Kaistha</em></h1>
+    <p class="tag">AI systems, thoughtful interfaces, open experiments.</p>
+  </div>
+  <div class="bottom">
+    <p class="hint" id="hint"><b>Hold</b> to open the shutter · <b>move</b> to shake the camera · <b>let go</b> to align</p>
+    <div class="read" aria-hidden="true"><div>EXP <span id="exp">0.0s</span></div><div>WOBBLE <span id="wob">0px</span></div><div class="state" id="state">IDLE</div></div>
+  </div>
+</div>
+<div class="tip" id="tip" aria-hidden="true"></div>
+<p class="sr" aria-live="polite" id="live"></p>
+<script>
+(() => {
+  // ---------- seeded determinism: identical sky to the profile hero ----------
+  function mulberry32(seed){let s=seed|0;return()=>{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^(s>>>15),1|s);
+    t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
+  const TEMPS=["#9dbcff","#c2d5ff","#e9edf7","#fff0d6","#ffd09a"], W8=[.14,.22,.34,.18,.12];
+  const pick=r=>{let x=r()*W8.reduce((a,b)=>a+b),acc=0;for(let i=0;i<5;i++){acc+=W8[i];if(x<=acc)return i;}return 4;};
+  const spring=(t,k=6,w=13)=>t<=0?0:t>=1?1:1-Math.exp(-t*k)*Math.cos(t*w);
+  const smooth=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+
+  const cv=document.getElementById("sky"), ctx=cv.getContext("2d");
+  const $=id=>document.getElementById(id);
+  const tip=$("tip"), live=$("live");
+  let W=0,H=0,dpr=1,PX=0,PY=0,RMAX=0, stars=[], days=[];
+
+  // ---------- state ----------
+  const S={mode:"idle",theta:0,speed:.004,wx:0,wy:0,tx:0,ty:0,vx:0,vy:0,
+    hist:[],held:0,alignT:0,alignFrom:null,fadeT:0,hover:-1,sel:-1,px:0,py:0,downX:0,downY:0};
+  const HIST_MAX=180, STEP=.0045; // radians between kept samples
+
+  function layout(){
+    dpr=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;
+    cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+    const narrow=W<700;
+    PX=W*(narrow?.62:.72);PY=H*(narrow?.24:.28);RMAX=Math.hypot(Math.max(PX,W-PX),Math.max(PY,H-PY))*1.02;
+    const n=days.length, rnd=mulberry32(20250114), peak=Math.max(1,...days.map(d=>d[1]));
+    stars=days.map(([date,c],i)=>{
+      const age=n-1-i;
+      const r=(58+900*Math.sqrt(age/Math.max(1,n-1))+(rnd()-.5)*14)/958*RMAX;
+      const a=rnd()*Math.PI*2, col=pick(rnd); rnd();
+      const t=c?Math.sqrt(c/peak):0;
+      return {date,c,r,a,col,t,w:c?.9+2.5*t:.7,al:c?.45+.55*t:.28,seed:(i*2654435761)>>>0};
+    });
+    // bucket by colour and brightness so trails stroke in few passes
+    buckets=new Map();
+    stars.forEach((s,i)=>{const k=s.col*10+Math.round(s.t*4)+(s.c?5:0);(buckets.get(k)||buckets.set(k,[]).get(k)).push(i);});
+  }
+  let buckets=new Map();
+
+  const pos=(s,th,wx,wy)=>{const a=s.a+th;return[PX+s.r*Math.cos(a)+wx,PY+s.r*Math.sin(a)+wy];};
+
+  // ---------- input ----------
+  function setMode(m){S.mode=m;$("state").textContent={idle:"IDLE",open:"● SHUTTER OPEN",align:"ALIGNING",hold:"ALIGNED"}[m];}
+  function openShutter(x,y){
+    if(reduce.matches)return;
+    S.hist=[{th:S.theta,wx:S.wx,wy:S.wy}];S.held=0;S.downX=x;S.downY=y;S.tx=S.ty=0;setMode("open");
+    tip.style.transform="translate(-9999px,0)";
+  }
+  function closeShutter(){
+    if(S.mode!=="open")return;
+    S.alignFrom=S.hist.map(h=>({wx:h.wx,wy:h.wy}));S.alignT=0;S.tx=S.ty=0;setMode("align");
+    live.textContent=`Exposure ${S.held.toFixed(1)} seconds. Trails aligned.`;
+  }
+  cv.addEventListener("pointerdown",e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);openShutter(e.clientX,e.clientY);});
+  cv.addEventListener("pointermove",e=>{
+    S.px=e.clientX;S.py=e.clientY;
+    if(S.mode==="open"){
+      const dx=e.clientX-S.downX, dy=e.clientY-S.downY, m=Math.hypot(dx,dy)||1, cap=Math.min(m,160)/m;
+      S.tx=dx*cap*.45;S.ty=dy*cap*.45;
+    } else if(e.pointerType==="mouse") hoverAt(e.clientX,e.clientY);
+  });
+  const end=()=>closeShutter();
+  cv.addEventListener("pointerup",end);cv.addEventListener("pointercancel",end);
+  cv.addEventListener("pointerleave",()=>{if(S.mode!=="open"){S.hover=-1;tip.style.transform="translate(-9999px,0)";}});
+  addEventListener("keydown",e=>{
+    if(e.code==="Space"&&!e.repeat&&document.activeElement===cv){e.preventDefault();openShutter(W/2,H/2);}
+    if(document.activeElement!==cv)return;
+    if(S.mode==="open"&&e.key.startsWith("Arrow")){e.preventDefault();const k=24;
+      S.tx+=e.key==="ArrowLeft"?-k:e.key==="ArrowRight"?k:0;S.ty+=e.key==="ArrowUp"?-k:e.key==="ArrowDown"?k:0;return;}
+    if(e.key==="ArrowLeft"||e.key==="ArrowRight"){e.preventDefault();
+      S.sel=S.sel<0?days.length-1:(S.sel+(e.key==="ArrowRight"?1:-1)+days.length)%days.length;announce(S.sel);}
+  });
+  addEventListener("keyup",e=>{if(e.code==="Space")closeShutter();});
+
+  const fmt=d=>new Date(d+"T00:00:00Z").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"});
+  function announce(i){const s=stars[i];live.textContent=`${fmt(s.date)}: ${s.c} contribution${s.c===1?"":"s"}.`;showTip(i);}
+  function hoverAt(x,y){
+    let best=-1,bd=196;
+    stars.forEach((s,i)=>{const[sx,sy]=pos(s,S.theta,S.wx,S.wy);const d=(sx-x)**2+(sy-y)**2;if(d<bd&&(s.c||d<64)){bd=d;best=i;}});
+    S.hover=best; if(best<0){tip.style.transform="translate(-9999px,0)";return;} showTip(best);
+  }
+  function showTip(i){
+    const s=stars[i];tip.innerHTML=`${fmt(s.date)} · <i>${s.c}</i> contribution${s.c===1?"":"s"}`;
+    const[sx,sy]=pos(s,S.theta,S.wx,S.wy);const tw=tip.offsetWidth;
+    const x=Math.min(W-tw-12,Math.max(12,sx+14)), y=Math.max(12,sy-38);
+    tip.style.transform=`translate(${x}px,${y}px)`;
+  }
+
+  // ---------- render ----------
+  function drawTrails(samples,alpha){
+    if(samples.length<2)return;
+    ctx.lineCap="round";ctx.lineJoin="round";
+    for(const [k,idx] of buckets){
+      const s0=stars[idx[0]];
+      ctx.strokeStyle=TEMPS[s0.col];ctx.globalAlpha=s0.al*alpha;ctx.lineWidth=s0.w;
+      ctx.beginPath();
+      for(const i of idx){const s=stars[i];
+        for(let j=0;j<samples.length;j++){const h=samples[j];const a=s.a+h.th;
+          const x=PX+s.r*Math.cos(a)+h.wx, y=PY+s.r*Math.sin(a)+h.wy;
+          j?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+  function drawStars(now,alpha){
+    const boil=Math.floor(now/110); // stepped twinkle, ~9 fps
+    for(const s of stars){
+      const[x,y]=pos(s,S.theta,S.wx,S.wy);
+      if(x<-20||y<-20||x>W+20||y>H+20)continue;
+      const h=((s.seed^Math.imul(boil,0x9E3779B1))>>>0)%1000/1000;
+      ctx.globalAlpha=alpha*s.al*(.78+.22*h);ctx.fillStyle=TEMPS[s.col];
+      ctx.beginPath();ctx.arc(x,y,s.w*.75,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  function drawPole(){
+    ctx.strokeStyle="rgba(138,146,166,.6)";ctx.lineWidth=1;ctx.beginPath();
+    ctx.moveTo(PX-12+S.wx,PY+S.wy);ctx.lineTo(PX-4+S.wx,PY+S.wy);ctx.moveTo(PX+4+S.wx,PY+S.wy);ctx.lineTo(PX+12+S.wx,PY+S.wy);
+    ctx.moveTo(PX+S.wx,PY-12+S.wy);ctx.lineTo(PX+S.wx,PY-4+S.wy);ctx.moveTo(PX+S.wx,PY+4+S.wy);ctx.lineTo(PX+S.wx,PY+12+S.wy);ctx.stroke();
+  }
+  function marker(i,color){
+    if(i<0)return;const[x,y]=pos(stars[i],S.theta,S.wx,S.wy);
+    ctx.strokeStyle=color;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(x,y,9,0,Math.PI*2);ctx.stroke();
+  }
+  let grad;
+  function background(){
+    if(!grad||grad._w!==W||grad._h!==H){grad=ctx.createRadialGradient(PX,PY,0,PX,PY,RMAX);
+      grad.addColorStop(0,"#111a33");grad.addColorStop(.55,"#0a0f1c");grad.addColorStop(1,"#05060a");grad._w=W;grad._h=H;}
+    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+    const g=ctx.createLinearGradient(0,H*.6,0,H);g.addColorStop(0,"rgba(255,138,61,0)");g.addColorStop(1,"rgba(255,138,61,.13)");
+    ctx.fillStyle=g;ctx.fillRect(0,H*.6,W,H*.4);
+  }
+
+  // ---------- loop ----------
+  let last=performance.now(), raf=0;
+  function frame(now){
+    raf=0;
+    const dt=Math.min(64,now-last);last=now;const s=dt/1000;
+    // rotation speed: slow drift idle, fast while shutter open
+    const target=S.mode==="open"?.42:.012;
+    S.speed+=(target-S.speed)*(1-Math.exp(-s*3));
+    if(S.mode==="open"||S.mode==="idle")S.theta-=S.speed*s;
+    // camera wobble follows the pointer through a damped spring
+    if(S.mode==="open"||S.mode==="idle"||S.mode==="hold"){
+      const k=170,c=15;S.vx+=((S.tx-S.wx)*k-S.vx*c)*s;S.vy+=((S.ty-S.wy)*k-S.vy*c)*s;S.wx+=S.vx*s;S.wy+=S.vy*s;
+    }
+    background();
+    if(S.mode==="open"){
+      S.held+=s;const lastH=S.hist[S.hist.length-1];
+      if(Math.abs(S.theta-lastH.th)>=STEP){S.hist.push({th:S.theta,wx:S.wx,wy:S.wy});if(S.hist.length>HIST_MAX)S.hist.shift();}
+      drawTrails(S.hist.concat([{th:S.theta,wx:S.wx,wy:S.wy}]),1);
+      drawStars(now,.9);
+    } else if(S.mode==="align"){
+      S.alignT+=s/1.2;const p=spring(Math.min(1,S.alignT));
+      const k=1-p;S.hist.forEach((h,j)=>{h.wx=S.alignFrom[j].wx*k;h.wy=S.alignFrom[j].wy*k;});
+      S.wx=S.hist[S.hist.length-1].wx;S.wy=S.hist[S.hist.length-1].wy;S.vx=S.vy=0;
+      drawTrails(S.hist,1);drawStars(now,.9);
+      if(S.alignT>=1){S.fadeT=0;S.wx=S.wy=0;setMode("hold");}
+    } else if(S.mode==="hold"){
+      S.fadeT+=s;const a=1-smooth(2.2,4,S.fadeT);
+      drawTrails(S.hist,a);drawStars(now,1);
+      if(a<=0){S.hist=[];setMode("idle");}
+    } else {
+      drawStars(now,1);
+    }
+    drawPole();
+    marker(S.hover,"rgba(255,166,77,.9)");marker(S.sel,"#ffa64d");
+    if(S.sel>=0&&S.mode==="idle")showTip(S.sel);
+    $("exp").textContent=S.held.toFixed(1)+"s";$("wob").textContent=Math.round(Math.hypot(S.wx,S.wy))+"px";
+    schedule();
+  }
+  function schedule(){if(!raf&&!document.hidden&&!reduce.matches)raf=requestAnimationFrame(frame);}
+
+  // reduced motion: one finished long exposure, no loop
+  function still(){
+    layout();background();
+    const samples=[];for(let j=0;j<=60;j++)samples.push({th:-j*(34*Math.PI/180)/60,wx:0,wy:0});
+    drawTrails(samples,1);drawPole();
+    $("hint").innerHTML="<b>Hover</b> or use <b>← →</b> to visit a day";$("state").textContent="STILL";
+  }
+  document.addEventListener("visibilitychange",()=>{last=performance.now();schedule();});
+  reduce.addEventListener?.("change",()=>{reduce.matches?still():schedule();});
+  let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{layout();grad=null;reduce.matches?still():0;},120);});
+
+  fetch("sky.json").then(r=>r.json()).then(d=>{
+    days=d.days;layout();
+    if(reduce.matches){still();
+      cv.addEventListener("pointermove",e=>{still();hoverAt(e.clientX,e.clientY);marker(S.hover,"#ffa64d");});}
+    else schedule();
+  });
+})();
+</script>
+</body>
+</html>

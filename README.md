@@ -1,54 +1,25 @@
-<p>
-  <picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/hero-still.svg" /><img src="assets/hero-motion.svg" width="100%" alt="Manya Kaistha — Curiosity, made tangible. AI systems, thoughtful interfaces, open experiments." /></picture>
-</p>
+<a href="https://manyakaistha.github.io/manyakaistha/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/hero-still.svg" /><img src="assets/hero-motion.svg" width="100%" alt="Manya Kaistha — AI systems, thoughtful interfaces, open experiments. A long-exposure night sky in which every star trail is one day of GitHub activity." /></picture></a>
 
 <p align="center">
-  <a href="#selected-work">Selected work</a> &nbsp; / &nbsp;
-  <a href="#what-connects-it-all">Approach</a> &nbsp; / &nbsp;
-  <a href="https://manyakaistha.github.io/DLGenAI-26T3/">Learning resources</a> &nbsp; / &nbsp;
+  <a href="https://manyakaistha.github.io/manyakaistha/"><strong>Open the observatory ↗</strong></a> &nbsp;·&nbsp;
+  <a href="#selected-work">Selected work</a> &nbsp;·&nbsp;
+  <a href="#how-i-work">How I work</a> &nbsp;·&nbsp;
   <a href="mailto:manyakaistha.dev@gmail.com">Say hello ↗</a>
 </p>
 
-<p align="center"><sub>Take a trail through the workshop · <a href="STILL.md">Read the still edition</a></sub></p>
+<p align="center"><sub>The sky above is my last year on GitHub, rebuilt every night: one star per day, brighter trails for busier days.<br />In the observatory, hold to open the shutter, shake the camera, and let go to watch it align.</sub></p>
 
 ### Hi, I'm Manya.
 
-I build across **machine learning, research, and product interfaces** — from asking questions of data to aligning night-sky images, exploring graphs, and making reading feel different.
-
-I'm interested in the whole journey: the underlying idea, the evidence that supports it, and the interface that makes it useful.
-
-## Pick a trail
-
-<details>
-<summary><strong>01 · Follow a question into an AI system</strong></summary>
-
-Start with [Analytics Query Engine](https://github.com/manyakaistha/nl-analytics-query-engine) to follow a question into SQL and results. Then explore [Touchline](https://github.com/manyakaistha/touchline-fifa-worldcup-hybrid-graph-rag), where passages and graph relationships make the evidence visible.
-
-</details>
-
-<details>
-<summary><strong>02 · Look inside an experiment</strong></summary>
-
-Explore [Sequential Matching](https://github.com/manyakaistha/The-Sequential-Matching-Problem-Final) for decisions with delayed feedback, or [FaceInsight](https://github.com/manyakaistha/faceinsight) for visual explanations of model outputs.
-
-</details>
-
-<details>
-<summary><strong>03 · Explore an app or learn something new</strong></summary>
-
-Try [PullStar](https://github.com/manyakaistha/PullStar) to align night-sky sequences and create star trails on your Mac. Meet [Flux Reader](https://github.com/manyakaistha/Flux-Reader) for word-by-word reading, or visit the [DL / GenAI learning hub](https://manyakaistha.github.io/DLGenAI-26T3/) for interactive lessons and notebooks.
-
-</details>
+I build across **machine learning, research, and product interfaces** — from asking questions of data to aligning night-sky images, exploring graphs, and making reading feel different. I care about the whole journey: the idea, the evidence behind it, and the interface that makes it useful.
 
 ## Selected work
 
 <a href="https://github.com/manyakaistha/PullStar"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/pullstar-still.svg" /><img src="assets/pullstar-motion.svg" width="100%" alt="PullStar — Align the night. Keep the motion. A local macOS app for aligned night-sky images, star trails, and MCP automation." /></picture></a>
 
-**PullStar · Align the night. Keep the motion.** Correct camera wobble while preserving the sky’s natural rotation. Export aligned frames for another editor, or create star-trail images and videos in the same local workspace.
+**Correct camera wobble while preserving the sky's natural rotation.** Export aligned frames for another editor, or create star-trail images and videos in the same local workspace.
 
-**[Download for macOS ↗](https://github.com/manyakaistha/PullStar/releases/latest)** &nbsp; · &nbsp; [Explore PullStar](https://github.com/manyakaistha/PullStar) &nbsp; · &nbsp; [MCP integration](https://github.com/manyakaistha/PullStar/blob/main/docs/mcp-server.md)
-
-<sub>Apple Silicon · macOS 14+ · Public release of Star Aligner</sub>
+**[Download for macOS ↗](https://github.com/manyakaistha/PullStar/releases/latest)** &nbsp;·&nbsp; [Explore PullStar](https://github.com/manyakaistha/PullStar) &nbsp;·&nbsp; [MCP integration](https://github.com/manyakaistha/PullStar/blob/main/docs/mcp-server.md)
 
 <details>
 <summary><strong>Inside PullStar</strong></summary>
@@ -67,12 +38,8 @@ Automatic star-field matching works without Polaris in the frame; manual referen
 
 **Ask a question. Inspect the calculation.** A natural-language analytics workspace with visible SQL, result tables, and evaluation evidence.
 
-[Analytics Query Engine ↗](https://github.com/manyakaistha/nl-analytics-query-engine)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Question → SQL → result`
 
 The interesting part is the handoff from generated SQL to bounded, read-only execution. The project also separates historical model evaluations from current offline software checks.
 
@@ -85,12 +52,8 @@ The interesting part is the handoff from generated SQL to bounded, read-only exe
 
 **World Cup questions, connected to sources.** A local-first evidence workbench combining graph and semantic retrieval with an explorable knowledge graph.
 
-[Touchline ↗](https://github.com/manyakaistha/touchline-fifa-worldcup-hybrid-graph-rag)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Question → evidence → graph`
 
 Graph and semantic retrieval can be explored independently or combined. Source passages stay visible, and hosted answer generation is an explicit option.
 
@@ -105,12 +68,8 @@ Graph and semantic retrieval can be explored independently or combined. Source p
 
 **A different rhythm for reading.** A PDF and EPUB reader with word-by-word playback, adjustable pace, and a local library that remembers your place.
 
-[Flux Reader ↗](https://github.com/manyakaistha/Flux-Reader)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Document → words → reading rhythm`
 
 PDF and EPUB extraction feed a word-by-word reader. Adjustable pacing, context when paused, and locally saved progress support the reading experience.
 
@@ -123,12 +82,8 @@ PDF and EPUB extraction feed a word-by-word reader. Adjustable pacing, context w
 
 **From model output to model understanding.** A vision research studio bringing together local inference, Grad-CAM explanations, and saved evaluations.
 
-[FaceInsight ↗](https://github.com/manyakaistha/faceinsight)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Image → prediction → explanation`
 
 The workbench connects local vision inference with Grad-CAM overlays. Model interpretation and the limitations of saved evaluations are part of the project.
 
@@ -143,12 +98,8 @@ The workbench connects local vision inference with Grad-CAM overlays. Model inte
 
 **Who to introduce, and when?** Research on reciprocal matching with delayed feedback, synthetic simulations, and a report that documents results and limitations.
 
-[Sequential Matching ↗](https://github.com/manyakaistha/The-Sequential-Matching-Problem-Final)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Arrival → information → introduction`
 
 Which information should a policy request before introducing a pair? The report records the experiments and retains the Greedy baseline because the tested alternatives did not establish superiority.
 
@@ -161,12 +112,8 @@ Which information should a policy request before introducing a pair? The report 
 
 **Make the difficult ideas easier to explore.** Study guides, interactive lessons, and notebooks on segmentation, data pipelines, and transfer learning.
 
-[DL / GenAI learning hub ↗](https://manyakaistha.github.io/DLGenAI-26T3/)
-
 <details>
 <summary><strong>Inside the build</strong></summary>
-
-`Concept → interaction → experiment`
 
 Interactive explanations sit alongside notebooks and study guides. Readers can move from visual intuition to code, then into a concrete experiment.
 
@@ -179,13 +126,15 @@ Interactive explanations sit alongside notebooks and study guides. Readers can m
 <details>
 <summary><strong>A little further into the workshop</strong></summary>
 
+- [Understanding Deep Learning RAG](https://github.com/manyakaistha/understanding-deep-learning-rag) — a local-first study tutor with handwritten hybrid retrieval and inspectable citations.
+- [RSNA knee MRI](https://github.com/manyakaistha/rsna-knee-mri) — weak supervision, anatomical ROI modelling, and distributed training.
+- [AudioFake](https://github.com/manyakaistha/AudioFake) — real-time audio deepfake detection.
 - [Protein secondary structure prediction](https://github.com/manyakaistha/helixq-protein-folding) — sequence models and residue-level visualizations.
-- [Phishing email classifier](https://github.com/manyakaistha/Phishing-Email-Classifier) — a DistilBERT-based classification CLI.
 - [Browse all repositories](https://github.com/manyakaistha?tab=repositories) — experiments, notebooks, and work in progress.
 
 </details>
 
-## What connects it all
+## How I work
 
 **Make the reasoning inspectable.** Show the SQL, retrieve the source, visualize the model, and document the experiment.
 
@@ -193,15 +142,6 @@ Interactive explanations sit alongside notebooks and study guides. Readers can m
 
 **Keep learning in public.** Turn investigations into projects, notebooks, and resources someone else can explore.
 
-<p>
-  <strong>Tools across these projects</strong><br />
-  Python · PyTorch · FastAPI · SQL · DuckDB<br />
-  TypeScript · React Native · Expo · Next.js
-</p>
+<sub>Python · PyTorch · FastAPI · SQL · DuckDB &nbsp;/&nbsp; TypeScript · React Native · Expo · Next.js</sub>
 
----
-
-Have a question about a project, an idea to explore, or feedback to share?<br />
-**[Get in touch ↗](mailto:manyakaistha.dev@gmail.com)** &nbsp; · &nbsp; [Explore the repositories](https://github.com/manyakaistha?tab=repositories)
-
-<a href="mailto:manyakaistha.dev@gmail.com"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/footer-still.svg" /><img src="assets/footer.svg" width="100%" alt="Always curious. Always building. Let's make something worth exploring." /></picture></a>
+<a href="mailto:manyakaistha.dev@gmail.com"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/footer-still.svg" /><img src="assets/footer-motion.svg" width="100%" alt="Clear skies — let's build something worth looking up at. manyakaistha.dev@gmail.com" /></picture></a>
